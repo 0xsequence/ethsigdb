@@ -31,6 +31,24 @@ the remote lookup will be slow when used at scale, so best to use caching
 or load a larger offline dataset.
 
 
+## Example
+
+```go
+sigdb := ethsigdb.Default()
+
+// Lookup event signature
+topicHash := "0xddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef"
+
+event, ok := sigdb.Lookup(topicHash)
+if !ok {
+  log.Fatal("event not found")
+}
+
+// this will return Transfer(address,address,uint256)
+fmt.Println("found event!", event)
+```
+
+
 ## LICENSE
 
 Apache 2.0
