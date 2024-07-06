@@ -1,2 +1,9 @@
-# go-fourbyte
-Ethereum event log signature lookup library
+ethsigdb
+========
+
+Ethereum event log signature database and Go lookup library.
+
+## LICENSE
+
+Apache 2.0
+
