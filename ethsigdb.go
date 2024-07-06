@@ -3,6 +3,10 @@ package ethsigdb
 import (
 	_ "embed"
 	"encoding/json"
+	"fmt"
+	"os"
+
+	"github.com/0xsequence/ethkit/ethcoder"
 )
 
 //go:embed ethsigdb.json
@@ -18,7 +22,7 @@ type Entry struct {
 }
 
 func New(jsonDataset []byte) (*ETHSigDB, error) {
-	var dataset map[string]string
+	dataset := map[string]string{}
 
 	if len(jsonDataset) > 0 {
 		err := json.Unmarshal(jsonDataset, &dataset)
@@ -42,8 +46,26 @@ func (e *ETHSigDB) Lookup(topicHash string) (string, bool) {
 	return event, ok
 }
 
-func (e *ETHSigDB) AddEntries(entries []Entry) {
+func (e *ETHSigDB) AddEntries(entries []Entry) error {
 	for _, entry := range entries {
-		e.dataset[entry.TopicHash] = entry.Event
+		topicHash, eventSig, err := ethcoder.EventTopicHash(entry.Event)
+		if err != nil {
+			return fmt.Errorf("invalid entry %s: %w", entry.Event, err)
+		}
+		e.dataset[topicHash.String()] = eventSig
 	}
+
+	return nil
+}
+
+func (e *ETHSigDB) WriteToFile(filepath string) error {
+	out, err := e.DatasetJSON()
+	if err != nil {
+		return err
+	}
+	return os.WriteFile(filepath, out, 0644)
+}
+
+func (e *ETHSigDB) DatasetJSON() ([]byte, error) {
+	return json.Marshal(e.dataset)
 }

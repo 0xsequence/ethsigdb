@@ -1,12 +1,13 @@
 package main
 
 import (
-	"encoding/json"
 	"fmt"
 	"log"
 	"os"
 	"path/filepath"
 	"strings"
+
+	"github.com/0xsequence/ethsigdb"
 )
 
 func main() {
@@ -18,7 +19,7 @@ func main() {
 		log.Fatal(err)
 	}
 
-	db := map[string]string{}
+	db, _ := ethsigdb.New(nil)
 
 	for _, file := range files {
 		if file.IsDir() {
@@ -35,15 +36,20 @@ func main() {
 		// build a map of file name to content
 		// event topic hash :: event definition
 
-		topicHash := file.Name()
-		if !strings.HasPrefix(topicHash, "0x") {
-			topicHash = fmt.Sprintf("0x%s", topicHash)
-		}
+		// topicHash := file.Name()
+		// if !strings.HasPrefix(topicHash, "0x") {
+		// 	topicHash = fmt.Sprintf("0x%s", topicHash)
+		// }
 
-		db[topicHash] = strings.TrimSpace(string(content))
+		err = db.AddEntries([]ethsigdb.Entry{{
+			Event: strings.TrimSpace(string(content)),
+		}})
+		if err != nil {
+			log.Fatal(err)
+		}
 	}
 
-	out, err := json.Marshal(db)
+	out, err := db.DatasetJSON()
 	if err != nil {
 		log.Fatal(err)
 	}
