@@ -1,7 +1,7 @@
 ethsigdb
 ========
 
-Ethereum event log signature database and Go lookup library.
+Ethereum transaction log event signature database and Go lookup library.
 
 ## LICENSE
 
