@@ -67,5 +67,5 @@ func (e *ETHSigDB) WriteToFile(filepath string) error {
 }
 
 func (e *ETHSigDB) DatasetJSON() ([]byte, error) {
-	return json.Marshal(e.dataset)
+	return json.MarshalIndent(e.dataset, "", "  ")
 }

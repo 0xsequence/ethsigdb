@@ -18,8 +18,8 @@ func NewRemoteLookup() (*RemoteLookup, error) {
 	return &RemoteLookup{}, nil
 }
 
-func (f *RemoteLookup) FindEventSig(ctx context.Context, eventSig string) (*RemoteEventSigResponse, error) {
-	request := fmt.Sprintf("https://api.openchain.xyz/signature-database/v1/lookup?event=%v&filter=false", eventSig)
+func (f *RemoteLookup) FindEventSig(ctx context.Context, topicHash string) (*RemoteEventSigResponse, error) {
+	request := fmt.Sprintf("https://api.openchain.xyz/signature-database/v1/lookup?event=%v&filter=false", topicHash)
 	_, body, err := f.doRequest(ctx, request)
 	if err != nil {
 		return nil, err
@@ -64,13 +64,13 @@ retry:
 			default:
 				retryCount++
 				delay := time.Duration(retryCount) * time.Second * 2
-				// fmt.Printf("fourbyte request to endpoint %s gave %s, trying again\n", request, resp.Status)
+				// fmt.Printf("ethsigdb client request to endpoint %s gave %s, trying again\n", request, resp.Status)
 				time.Sleep(delay)
 				goto retry
 			}
 		}
 
-		return resp.StatusCode, nil, fmt.Errorf("fourbyte fail, status code %d", resp.StatusCode)
+		return resp.StatusCode, nil, fmt.Errorf("ethsigdb client fail, status code %d", resp.StatusCode)
 	}
 
 	body, err := io.ReadAll(resp.Body)

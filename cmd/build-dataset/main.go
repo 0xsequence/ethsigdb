@@ -10,6 +10,9 @@ import (
 	"github.com/0xsequence/ethsigdb"
 )
 
+// run with:
+// go run . > ../../ethsigdb.json
+
 func main() {
 	// topic0 signatures directory
 	dir := "/Users/peter/Dev/other/topic0/signatures"
@@ -43,6 +46,15 @@ func main() {
 
 		err = db.AddEntries([]ethsigdb.Entry{{
 			Event: strings.TrimSpace(string(content)),
+		}})
+		if err != nil {
+			log.Fatal(err)
+		}
+	}
+
+	for _, event := range moreEvents {
+		err = db.AddEntries([]ethsigdb.Entry{{
+			Event: event,
 		}})
 		if err != nil {
 			log.Fatal(err)
