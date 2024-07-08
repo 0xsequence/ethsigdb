@@ -4,7 +4,6 @@ import (
 	"fmt"
 	"log"
 	"os"
-	"path/filepath"
 	"strings"
 
 	"github.com/0xsequence/ethsigdb"
@@ -14,50 +13,26 @@ import (
 // go run . > ../../ethsigdb.json
 
 func main() {
-	// topic0 signatures directory
-	dir := "/Users/peter/Dev/other/topic0/signatures"
-
-	files, err := os.ReadDir(dir)
-	if err != nil {
-		log.Fatal(err)
+	files := []string{
+		"./more_events_1.csv", "./more_events_2.csv",
 	}
 
 	db, _ := ethsigdb.New(nil)
 
 	for _, file := range files {
-		if file.IsDir() {
-			continue
-		}
-
-		filePath := filepath.Join(dir, file.Name())
-		content, err := os.ReadFile(filePath)
-		if err != nil {
-			log.Printf("Failed to read file %s: %v\n", filePath, err)
-			continue
-		}
-
-		// build a map of file name to content
-		// event topic hash :: event definition
-
-		// topicHash := file.Name()
-		// if !strings.HasPrefix(topicHash, "0x") {
-		// 	topicHash = fmt.Sprintf("0x%s", topicHash)
-		// }
-
-		err = db.AddEntries([]ethsigdb.Entry{{
-			Event: strings.TrimSpace(string(content)),
-		}})
+		fileData, err := os.ReadFile(file)
 		if err != nil {
 			log.Fatal(err)
 		}
-	}
+		lines := strings.Split(string(fileData), "\n")
 
-	for _, event := range moreEvents {
-		err = db.AddEntries([]ethsigdb.Entry{{
-			Event: event,
-		}})
-		if err != nil {
-			log.Fatal(err)
+		for _, event := range lines {
+			err = db.AddEntries([]ethsigdb.Entry{{
+				Event: strings.TrimSpace(event),
+			}})
+			if err != nil {
+				log.Fatal(err)
+			}
 		}
 	}
 
