@@ -22,17 +22,14 @@ for decoding an event.
 The signature dataset was originally sourced from https://github.com/otterscan/topic0
 which in turn is sourced from https://github.com/ethereum/sourcify. 
 
-NOTE: the contents are stored in ./ethsigdb.json with ~9000 entries. This is a pretty small
-dataset, but you could certainly extend this library to use other datasets/backends.
-
-Additionally, we have ./cmd/build-dataset/more_events.go with a list of event signatures
-which you can add to. When running the build-dataset program, it will compute the
-topic hashes and store all datasets into ./ethsigdb.json.
+Signature data was copied into ./cmd/build-dataset/more_events_1.csv and additional
+events are specified in ./cmd/build-dataset/more_events_2.csv. When running the build-dataset
+program, it will compute the topic hashes and store all datasets into ./ethsigdb.json.
 
 Finally, if you'd like to search for events by topic hash, you can use ./cmd/find-topics
 which will use the remote openchain.xyz service to look up events by their topic hash,
 and them print any topic hashes which are not in our local database, so you can copy
-them over to ./cmd/build-dataset/more_events.go and rebuild the local db.
+them over to ./cmd/build-dataset/more_events_2.csv and rebuild the local db.
 
 
 ## Example
